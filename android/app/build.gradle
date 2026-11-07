@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.dmwnezes.distrito'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.dmwnezes.distrito'
+        minSdk 24
+        targetSdk 34
+        versionCode Integer.parseInt(System.getenv('VERSION_CODE') ?: '1')
+        versionName "1.0." + (System.getenv('VERSION_CODE') ?: '1')
+    }
+
+    // A chave vem do segredo ANDROID_KEYSTORE no GitHub (nunca fica no repositório).
+    // Com ela, cada APK novo instala por cima do anterior sem perder as cidades salvas.
+    def chave = file('../distrito.jks')
+    signingConfigs {
+        fixa {
+            storeFile chave
+            storePassword System.getenv('DISTRITO_KEY_PASS') ?: ''
+            keyAlias 'distrito'
+            keyPassword System.getenv('DISTRITO_KEY_PASS') ?: ''
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig chave.exists() ? signingConfigs.fixa : signingConfigs.debug
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.11.0'
+}

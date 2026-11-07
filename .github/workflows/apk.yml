@@ -1,0 +1,46 @@
+name: Gerar APK
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['README.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Copiar o jogo para dentro do APK
+        run: |
+          mkdir -p android/app/src/main/assets/www
+          cp -r index.html manifest.webmanifest icon.png icon192.png css js android/app/src/main/assets/www/
+      - name: Chave de assinatura
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE }}
+        run: if [ -n "$KS" ]; then echo "$KS" | base64 -d > android/distrito.jks; else echo "::warning::Sem o segredo ANDROID_KEYSTORE o APK sai com chave temporária"; fi
+      - name: Compilar
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          DISTRITO_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+        run: |
+          gradle assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk ../Distrito.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Distrito 1.0.${{ github.run_number }}
+          body: Baixe o Distrito.apk e instale no celular. Instala por cima da versão anterior sem perder as cidades.
+          files: Distrito.apk
+          make_latest: true

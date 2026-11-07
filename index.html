@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#11151c">
+<title>Distrito</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="top"></div>
+  <div id="side"></div>
+  <div id="tut" class="hidden"></div>
+  <div id="info" class="hidden"></div>
+  <div id="bottom">
+    <div id="hint" class="hidden"></div>
+    <div id="tray" class="hidden"></div>
+    <div id="cats"></div>
+  </div>
+</div>
+
+<div id="menu" class="hidden"></div>
+<div id="toasts"></div>
+<div id="modals"></div>
+<div id="rotate"><div>Gire o celular para jogar na horizontal</div></div>
+<div id="loading"><div class="logo"><span class="logo-mark"></span>Distrito</div></div>
+
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/world.js"></script>
+<script src="js/render.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/save.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !location.hostname.endsWith('androidplatform.net')) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
